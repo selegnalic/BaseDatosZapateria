@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS cat_cliente ( #Datos de los clientes
 PRIMARY KEY (Id_Cliente)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-#SET GLOBAL innodb_file_per_table=1;
 
 CREATE TABLE IF NOT EXISTS inventario ( #se mantien actualizada a traves de la tabla Movimiento_Inventario
 `Id_Producto` INT(10) NOT NULL,
@@ -96,18 +95,19 @@ CREATE TABLE IF NOT EXISTS facturacion ( #contiene los datos de facturacion
 `Serie` INT(10) NOT NULL, 
 `Id_Cliente` INT(10) NOT NULL ,
 `Id_Compra` INT(10) NOT NULL,
-`RFC` VARCHAR(10) NOT NULL,
-`Razon_Social` VARCHAR(10) NOT NULL, 
-`CFDI` VARCHAR (10) NOT NULL,
-`Fecha` VARCHAR (20) NOT NULL,
-`Calle` VARCHAR (20) NOT NULL,
-`Codigo_Postal` VARCHAR(30) NOT NULL,
-`Colonia` VARCHAR (30) NOT NULL,
-`Numero` VARCHAR (5) NOT NULL,
-`XML` TEXT NOT NULL,
-`UUID` TEXT NOT NULL, #Identificador unico de facturas
+`RFC` VARCHAR(10) NOT NULL COLLATE 'utf8_bin',
+`Razon_Social` VARCHAR(10) NOT NULL COLLATE 'utf8_spanish_ci', 
+`CFDI` VARCHAR (10) NOT NULL COLLATE 'utf8_bin',
+`Fecha` VARCHAR (20) NOT NULL COLLATE 'utf8_bin',
+`Calle` VARCHAR (20) NOT NULL COLLATE 'utf8_spanish_ci',
+`Codigo_Postal` VARCHAR(30) NOT NULL COLLATE 'utf8_bin',
+`Colonia` VARCHAR (30) NOT NULL COLLATE 'utf8_spanish_ci',
+`Numero` VARCHAR (5) NOT NULL COLLATE 'utf8_bin',
+`XML` TEXT NOT NULL COLLATE 'utf8_bin',
+`UUID` TEXT NOT NULL COLLATE 'utf8_bin', #Identificador unico de facturas
 PRIMARY KEY (Id_Factura), 
  FOREIGN KEY (Id_Cliente) REFERENCES Cat_Cliente(Id_Cliente),
 FOREIGN KEY (Id_Compra) REFERENCES Compra(Id_Compra)
 ) ENGINE=MyISAM  DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1 ;
+
 
