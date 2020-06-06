@@ -1,0 +1,64 @@
+#Consulta la facturación de un cliente en específico.
+SELECT CC.Nombre_Cliente, CC.Telefono_Celular, CC.Correo, 
+F.Folio_Factura, F.RFC, F.Razon_Social, F.Fecha, F.Calle, F.Colonia, F.Numero, F.Codigo_Postal,
+CP.Cantidad, CatP.Nombre, CP.SubTotal, C.Monto_Total
+FROM facturacion F
+INNER JOIN cat_cliente  CC
+ON F.Id_Cliente=CC.Id_Cliente
+INNER JOIN compra C
+ON F.Id_Compra=C.Id_Compra
+INNER JOIN compra_producto CP
+ON C.Id_Compra= CP.Id_Compra
+INNER JOIN cat_productos CatP
+ON CP.Id_Producto=CatP.Id_Producto
+WHERE CC.Nombre_Cliente='Felipe Sachez Velazquez'
+
+#Consulta la facturación de un producto en específico.
+SESELECT CC.Nombre_Cliente, CC.Telefono_Celular, CC.Correo, 
+F.Folio_Factura, F.RFC, F.Razon_Social, F.Fecha, F.Calle, F.Colonia, F.Numero, F.Codigo_Postal,
+CP.Cantidad, CatP.Nombre, CP.SubTotal, C.Monto_Total
+FROM facturacion F
+INNER JOIN cat_cliente  CC
+ON F.Id_Cliente=CC.Id_Cliente
+INNER JOIN compra C
+ON F.Id_Compra=C.Id_Compra
+INNER JOIN compra_producto CP
+ON C.Id_Compra= CP.Id_Compra
+INNER JOIN cat_productos CatP
+ON CP.Id_Producto=CatP.Id_Producto
+WHERE CatP.Nombre='Botines biker'
+
+#Consulta la facturación de un rango de fechas.
+SELECT  CC.Nombre_Cliente, CC.Telefono_Celular, CC.Correo, 
+F.Folio_Factura, F.RFC, F.Razon_Social, F.Fecha, F.Calle, F.Colonia, F.Numero, F.Codigo_Postal,
+CP.Cantidad, CatP.Nombre, CP.SubTotal, C.Monto_Total
+FROM facturacion F
+INNER JOIN cat_cliente  CC
+ON F.Id_Cliente=CC.Id_Cliente
+INNER JOIN compra C
+ON F.Id_Compra=C.Id_Compra
+INNER JOIN compra_producto CP
+ON C.Id_Compra= CP.Id_Compra
+INNER JOIN cat_productos CatP
+ON CP.Id_Producto=CatP.Id_Producto
+WHERE F.Fecha BETWEEN '06/03/2020' AND '10/03/2020'
+
+#De la facturación, consulta los clientes únicos
+# (es decir, se requiere el listado de los clientes que han comprado por lo menos una vez, 
+#pero en el listado no se deben repetir los clientes)
+SELECT  F.Id_Cliente, CC.Nombre_Cliente, CC.Telefono_Celular, CC.Correo, 
+F.Folio_Factura, F.RFC, F.Razon_Social, F.Fecha, F.Calle, F.Colonia, F.Numero, F.Codigo_Postal,
+CP.Cantidad, CatP.Nombre, CP.SubTotal, C.Monto_Total
+FROM facturacion F
+INNER JOIN cat_cliente  CC
+ON F.Id_Cliente=CC.Id_Cliente
+INNER JOIN compra C
+ON F.Id_Compra=C.Id_Compra
+INNER JOIN compra_producto CP
+ON C.Id_Compra= CP.Id_Compra
+INNER JOIN cat_productos CatP
+ON CP.Id_Producto=CatP.Id_Producto
+GROUP BY F.Id_Cliente,CC.Nombre_Cliente, CC.Telefono_Celular, CC.Correo, 
+F.Folio_Factura, F.RFC, F.Razon_Social, F.Fecha, F.Calle, F.Colonia, F.Numero, F.Codigo_Postal,
+CP.Cantidad, CatP.Nombre, CP.SubTotal, C.Monto_Total
+HAVING  COUNT(F.Id_Cliente)<2;
