@@ -1,0 +1,113 @@
+CREATE DATABASE Zapateria
+
+
+CREATE TABLE IF NOT EXISTS Cat_Productos (
+`Id_Producto` INT(10) UNSIGNED  NOT NULL AUTO_INCREMENT,
+`Modelo` VARCHAR (20)   NOT NULL ,  #presentación del zapato
+`Nombre` VARCHAR(50) NOT NULL COLLATE 'utf8_spanish_ci' ,
+`Valor` DECIMAL (10,2) NOT NULL,
+PRIMARY KEY (Id_Producto)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ #collate 'utf8_bin' para texto alfanumericos y mayuscylas y minusculas
+CREATE TABLE IF NOT EXISTS cat_color ( #catalogo para los diferentes colores de zapatos
+`Id_Color` INT (10) UNSIGNED NOT NULL AUTO_INCREMENT,
+`Nombre_Color` VARCHAR (20) NOT NULL COLLATE 'utf8_bin',
+PRIMARY KEY (Id_Color)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1; # ENGINE InnoDB
+
+
+CREATE TABLE IF NOT EXISTS cat_talla (    #catalogo para las diferentes tallas de zapatos
+`Id_Talla` INT(10)  UNSIGNED NOT NULL AUTO_INCREMENT,
+`Talla` VARCHAR (30) NOT NULL COLLATE 'utf8_bin',
+PRIMARY KEY (Id_Talla)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS cat_cliente ( #Datos de los clientes
+`Id_Cliente` INT(10)  NOT NULL AUTO_INCREMENT,
+`Nombre_Cliente` VARCHAR (50) NOT NULL COLLATE 'utf8_spanish_ci',
+`Telefono_Casa` VARCHAR (20) NOT NULL,
+`Telefono_Celular` VARCHAR (20) NOT NULL,
+`Correo` VARCHAR(20) NOT NULL,
+PRIMARY KEY (Id_Cliente)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+#SET GLOBAL innodb_file_per_table=1;
+
+CREATE TABLE IF NOT EXISTS inventario ( #se mantien actualizada a traves de la tabla Movimiento_Inventario
+`Id_Producto` INT(10) NOT NULL,
+`Id_Color` INT (10) NOT NULL,
+`Id_Talla` INT (10)NOT NULL,
+`Cantidad` INT (20) NOT NULL,  
+FOREIGN KEY (Id_Producto) REFERENCES cat_productos(Id_Producto),
+FOREIGN KEY (Id_Color) REFERENCES cat_color(Id_Color),
+FOREIGN KEY (Id_Talla) REFERENCES cat_talla(Id_Talla)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS cat_movimiento ( #catalogo de movimientos para saber que tipo de operación es
+`Id_Movimiento` INT(10)  UNSIGNED NOT NULL AUTO_INCREMENT,
+`Movimiento` VARCHAR (20) NOT NULL COLLATE 'utf8_spanish_ci',
+`Operacion` VARCHAR (20) NOT NULL COLLATE 'utf8_spanish_ci',
+PRIMARY KEY (Id_Movimiento)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;#INNODB
+
+
+CREATE TABLE IF NOT EXISTS movimiento_inventario ( #contiene todos los movimientos que se han realizado en el inventario
+`Id_Movimiento` INT(10)  UNSIGNED NOT NULL AUTO_INCREMENT,
+`Id_Producto` INT (10) NOT NULL,
+`Id_Color` INT (10) NOT NULL,
+`Id_Talla` INT (10) NOT NULL, 
+`Fecha` VARCHAR(10) COLLATE 'utf8_bin', 
+`Cantidad_Inicio` INT (10) NOT NULL, 
+`Cantidad_Final` INT (10) NOT NULL,
+FOREIGN KEY (Id_Producto) REFERENCES Cat_Productos(Id_Producto),
+FOREIGN KEY (Id_Color) REFERENCES Cat_Color(Id_Color),
+FOREIGN KEY (Id_Talla) REFERENCES Cat_Color(Id_Talla)
+)  ENGINE=MyISAM  DEFAULT CHARSET=UTF8;
+
+CREATE TABLE IF NOT EXISTS compra ( #Contiene las compras realizadas para solicitar factura
+`ID_Compra` INT (10)  UNSIGNED NOT NULL AUTO_INCREMENT,
+`Folio` VARCHAR(20)  NOT NULL COLLATE 'utf8_bin',
+`Id_Cliente` INT  (10) NOT NULL ,
+`Fecha` VARCHAR (20) COLLATE 'utf8_bin',
+`Monto_Total` DECIMAL (20,4),
+PRIMARY KEY (ID_Compra), 
+FOREIGN KEY (Id_Cliente) REFERENCES Cat_Cliente(Id_Cliente)
+) ENGINE=MyISAM  DEFAULT  CHARSET=UTF8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS compra_producto ( #detalle de la compra: productos, cantidades, impuestos, descuento, etc
+`ID_Compra` INT (10) NOT NULL, 
+`Id_Producto` INT (10) NOT NULL,
+`Id_Color` INT (10) NOT NULL,
+`Id_Talla` INT (10) NOT NULL,
+`Descuento` DECIMAL (5,4) NOT NULL,
+`Impuesto` DECIMAL (5,4) NOT NULL,
+`Cantidad` INT (10) NOT NULL,
+`SubTotal` DECIMAL (20,4) NOT NULL,
+FOREIGN KEY (ID_Compra) REFERENCES Compra(ID_Compra),
+FOREIGN KEY (Id_Producto) REFERENCES Cat_Productos(Id_Producto),
+FOREIGN KEY (Id_Talla) REFERENCES Cat_Talla(Id_Talla),
+FOREIGN KEY (Id_Color) REFERENCES Cat_Color(Id_Color)
+) ENGINE=MyISAM  DEFAULT CHARSET=UTF8;
+
+CREATE TABLE IF NOT EXISTS facturacion ( #contiene los datos de facturacion
+`Id_Factura` INT(10)  UNSIGNED NOT NULL AUTO_INCREMENT,
+`Folio_Factura` VARCHAR	(10) NOT NULL,
+`Serie` INT(10) NOT NULL, 
+`Id_Cliente` INT(10) NOT NULL ,
+`Id_Compra` INT(10) NOT NULL,
+`RFC` VARCHAR(10) NOT NULL,
+`Razon_Social` VARCHAR(10) NOT NULL, 
+`CFDI` VARCHAR (10) NOT NULL,
+`Fecha` VARCHAR (20) NOT NULL,
+`Calle` VARCHAR (20) NOT NULL,
+`Codigo_Postal` VARCHAR(30) NOT NULL,
+`Colonia` VARCHAR (30) NOT NULL,
+`Numero` VARCHAR (5) NOT NULL,
+`XML` TEXT NOT NULL,
+`UUID` TEXT NOT NULL, #Identificador unico de facturas
+PRIMARY KEY (Id_Factura), 
+ FOREIGN KEY (Id_Cliente) REFERENCES Cat_Cliente(Id_Cliente),
+FOREIGN KEY (Id_Compra) REFERENCES Compra(Id_Compra)
+) ENGINE=MyISAM  DEFAULT CHARSET=UTF8 AUTO_INCREMENT=1 ;
+
